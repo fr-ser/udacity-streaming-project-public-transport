@@ -5,8 +5,8 @@ from confluent_kafka import avro
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH
 
-from ..models import Turnstile
-from ..models.producer import Producer
+from . import Turnstile
+from .producer import Producer
 
 
 class Station(Producer):

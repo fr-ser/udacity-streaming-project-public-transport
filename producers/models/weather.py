@@ -9,7 +9,7 @@ import requests
 
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH, KAKFA_REST_PROXY_URL
-from producers.models.producer import Producer
+from .producer import Producer
 
 
 class Weather(Producer):

@@ -2,7 +2,7 @@
 
 from enum import IntEnum
 
-from producers.models import Station, Train
+from . import Station, Train
 
 
 class Line:

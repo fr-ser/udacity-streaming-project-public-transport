@@ -4,8 +4,8 @@ from confluent_kafka import avro
 
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH
-from producers.models.producer import Producer
-from producers.models.turnstile_hardware import TurnstileHardware
+from .producer import Producer
+from .turnstile_hardware import TurnstileHardware
 
 
 class Turnstile(Producer):

@@ -9,8 +9,8 @@ import pandas as pd
 from shared_helpers.logging import logger
 from shared_helpers.config import DATA_PATH
 
-from producers.connector import configure_connector
-from producers.models import Line, Weather
+from connector import configure_connector
+from models import Line, Weather
 
 
 class TimeSimulation:
