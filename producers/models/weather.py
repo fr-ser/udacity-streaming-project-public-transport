@@ -9,10 +9,9 @@ import requests
 
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH, KAKFA_REST_PROXY_URL
-from .producer import Producer
 
 
-class Weather(Producer):
+class Weather:
     """Defines a simulated weather model"""
 
     status = IntEnum(
@@ -28,13 +27,6 @@ class Weather(Producer):
     topic_name = "cta-weather"
 
     def __init__(self, month):
-        super().__init__(
-            Weather.topic_name,
-            key_schema=Weather.key_schema,
-            value_schema=Weather.value_schema,
-            num_partitions=5,
-        )
-
         self.status = Weather.status.sunny
         self.temp = 70.0
         if month in Weather.winter_months:
