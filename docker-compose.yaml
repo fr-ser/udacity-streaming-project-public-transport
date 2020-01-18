@@ -24,6 +24,15 @@ services:
     depends_on:
       - "zookeeper"
 
+  kafka-cli:
+    image: frser/kafka-cli
+    environment:
+      BOOTSTRAP_SERVER: PLAINTEXT://kafka0:19092
+      CREATE_TOPICS: >-
+        cta-weather:5:1
+    depends_on:
+      - kafka0
+
   schema-registry:
     image: confluentinc/cp-schema-registry:5.4.0
     ports:
