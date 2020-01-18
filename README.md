@@ -8,25 +8,18 @@ For the description and further information see the [file](instructions.md) in
 To run the whole thing:
 
 ```bash
-./start.sh
+docker-compose up producers
 ```
 
 Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 
-## Weird Hack Announcement
+## Topic creation
 
-Creating a lot of topics for is very taxing for the disk space (and kafka probably).
-Due to reproducible, but not easily explainable or understandable circumstances on startup
-(when a lot of topics are created) the topic creation results in applications errors due to
-timeouts.
+Personally I do not like creating topics dynamically. In like the topics to exist before the
+application starts running.
+This is of course not possible when dynamic information (such as a station name) is part of the
+topic name.
 
-These errors only happened when the whole docker stack is started as one
-(no matter how long each service gives the previous ones time to start up).
-The errors vanish into thin air, when kafka is started alone and immediately afterwards the rest
-of the stack.
-Therefore see the miraculous hack:
-
-```bash
-docker-compose up -d kafka0
-docker-compose up producer
-```
+Therefore I decided to avoid using such dynamic names and create the topics as part of the
+docker startup with a docker-cli image. In the real world I would also create the topics separate
+from the application logic, so I prefer this appraoch.

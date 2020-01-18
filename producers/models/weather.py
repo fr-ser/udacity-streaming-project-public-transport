@@ -24,7 +24,7 @@ class Weather:
     winter_months = set((0, 1, 2, 3, 10, 11))
     summer_months = set((6, 7, 8))
 
-    topic_name = "cta-weather"
+    topic_name = "cta.weather"
 
     def __init__(self, month):
         self.status = Weather.status.sunny
