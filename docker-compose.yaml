@@ -48,7 +48,8 @@ services:
       CREATE_TOPICS: >-
         cta.weather:5:3,
         cta.station.arrival:15:3,
-        cta.station.turnstile:15:3
+        cta.station.turnstile:15:3,
+        connect.cta.db.stations:3:3
     depends_on:
       - kafka0
       - kafka1
