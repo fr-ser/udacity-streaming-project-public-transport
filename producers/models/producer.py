@@ -72,7 +72,7 @@ class Producer:
         )
 
         try:
-            futures[self.topic_name].result(timeout=10)
+            futures[self.topic_name].result(timeout=30)
             self.existing_topics.add(self.topic_name)
             logger.info(f"Created topic: {self.topic_name}")
         except Exception:

@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 
-SCHEMA_PATH = Path(os.environ["BASE_PATH"]) / "models" / "schemas"
-DATA_PATH = Path(os.environ["BASE_PATH"]) / "data"
+SCHEMA_PATH = Path(os.environ.get("BASE_PATH", ".")) / "models" / "schemas"
+DATA_PATH = Path(os.environ.get("BASE_PATH", ".")) / "data"
 
 
 STATION_DB_JDBC_URL = os.environ.get(

@@ -140,3 +140,21 @@ services:
     volumes:
       - ./producers/data/cta_stations.csv:/tmp/cta_stations.csv
       - ./load_stations.sql:/docker-entrypoint-initdb.d/load_stations.sql
+
+  producers:
+    build:
+      context: ./
+      dockerfile: ./producers/Dockerfile
+    environment:
+      BASE_PATH: "/app/producers/"
+      STATION_DB_JDBC_URL: "jdbc:postgresql://postgres:5432/cta?user=cta_admin&password=chicago"
+      KAFKA_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka0:19092"
+      KAFKA_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      KAFKA_CONNECT_URL: "http://connect:8083"
+      KAKFA_REST_PROXY_URL: "http://rest-proxy:8082"
+    depends_on:
+      - postgres
+      - kafka-cli
+      - schema-registry
+      - connect
+      - rest-proxy

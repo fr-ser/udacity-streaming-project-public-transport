@@ -5,22 +5,11 @@ For the description and further information see the [file](instructions.md) in
 
 ### Running the Simulation
 
-There are two pieces to the simulation, the `producer` and `consumer`. As you develop each piece of
-the code, it is recommended that you only run one piece of the project at a time.
-
-However, when you are ready to verify the end-to-end system prior to submission, it is critical
-that you open a terminal window for each piece and run them at the same time.
-
-**If you do not run both the producer and consumer at the same time you will not be able to**
-**successfully complete the project**.
-
 #### To run the `producer`:
 
-1. `cd producers`
-2. `virtualenv venv`
-3. `. venv/bin/activate`
-4. `pip install -r requirements.txt`
-5. `python simulation.py`
+```bash
+docker-compose up --build producers
+```
 
 Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 
