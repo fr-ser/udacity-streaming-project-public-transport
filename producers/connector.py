@@ -14,13 +14,13 @@ def configure_connector():
     """Starts and configures the Kafka Connect connector"""
     logger.debug("creating or updating kafka connect connector...")
 
-    resp = requests.get(f"{KAFKA_CONNECT_URL}/{CONNECTOR_NAME}")
+    resp = requests.get(f"{KAFKA_CONNECT_URL}/connectors/{CONNECTOR_NAME}")
     if resp.status_code == 200:
         logger.info("Kafka Connect JDBC connector already created skipping recreation")
         return
 
     resp = requests.post(
-        KAFKA_CONNECT_URL,
+        f"{KAFKA_CONNECT_URL}/connectors",
         headers={"Content-Type": "application/json"},
         data=json.dumps({
             "name": CONNECTOR_NAME,
