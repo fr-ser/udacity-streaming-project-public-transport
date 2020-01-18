@@ -58,7 +58,7 @@ class TimeSimulation:
         weather = Weather(curr_time.month)
         try:
             while True:
-                logger.debug("simulation running: %s", curr_time.isoformat())
+                logger.debug(f"simulation running: {curr_time.isoformat()}")
                 # Send weather on the top of the hour
                 if curr_time.minute == 0:
                     weather.run(curr_time.month)
