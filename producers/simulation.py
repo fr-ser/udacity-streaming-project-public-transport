@@ -1,23 +1,16 @@
-"""Defines a time simulation responsible for executing any registered
-producers
-"""
+"""Defines a time simulation responsible for executing any registered producers"""
+
 import datetime
-import time
 from enum import IntEnum
-import logging
-import logging.config
-from pathlib import Path
+import time
 
 import pandas as pd
 
-# Import logging before models to ensure configuration is picked up
-logging.config.fileConfig(f"{Path(__file__).parents[0]}/logging.ini")
+from shared_helpers.logging import logger
+from shared_helpers.config import DATA_PATH
 
-from connector import configure_connector
-from models import Line, Weather
-
-
-logger = logging.getLogger(__name__)
+from producers.connector import configure_connector
+from producers.models import Line, Weather
 
 
 class TimeSimulation:
@@ -32,9 +25,7 @@ class TimeSimulation:
             self.time_step = datetime.timedelta(minutes=self.sleep_seconds)
 
         # Read data from disk
-        self.raw_df = pd.read_csv(
-            f"{Path(__file__).parents[0]}/data/cta_stations.csv"
-        ).sort_values("order")
+        self.raw_df = pd.read_csv(DATA_PATH / "cta_stations.csv").sort_values("order")
 
         # Define the train schedule (same for all trains)
         self.schedule = schedule
@@ -60,7 +51,7 @@ class TimeSimulation:
             hour=0, minute=0, second=0, microsecond=0
         )
         logger.info("Beginning simulation, press Ctrl+C to exit at any time")
-        logger.info("loading kafka connect jdbc source connector")
+        logger.info("loading Kafka Connect JDBC source connector")
         configure_connector()
 
         logger.info("beginning cta train simulation")
@@ -71,12 +62,14 @@ class TimeSimulation:
                 # Send weather on the top of the hour
                 if curr_time.minute == 0:
                     weather.run(curr_time.month)
-                _ = [line.run(curr_time, self.time_step) for line in self.train_lines]
+                    for line in self.train_lines:
+                        line.run(curr_time, self.time_step)
                 curr_time = curr_time + self.time_step
                 time.sleep(self.sleep_seconds)
-        except KeyboardInterrupt as e:
+        except KeyboardInterrupt:
             logger.info("Shutting down")
-            _ = [line.close() for line in self.train_lines]
+            for line in self.train_lines:
+                line.close()
 
 
 if __name__ == "__main__":
