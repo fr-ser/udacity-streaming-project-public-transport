@@ -21,7 +21,7 @@ class Producer:
         topic_name,
         key_schema,
         value_schema=None,
-        num_partitions=1,
+        num_partitions=5,
         num_replicas=1,
     ):
         """Initializes a Producer object with basic settings"""
@@ -34,7 +34,6 @@ class Producer:
         # If the topic does not already exist, try to create it
         if self.topic_name not in Producer.existing_topics:
             self.create_topic()
-            Producer.existing_topics.add(self.topic_name)
 
         schema_registry = CachedSchemaRegistryClient({"url": KAFKA_SCHEMA_REGISTRY_URL})
         self.producer = AvroProducer(
@@ -53,11 +52,11 @@ class Producer:
         cluster_meta_data = client.list_topics(timeout=10)
 
         # fill existing topics when first connecting
-        if len(self.existing_topics) == 0:
-            self.existing_topics.update(cluster_meta_data.topics.keys())
+        if len(Producer.existing_topics) == 0:
+            Producer.existing_topics.update(cluster_meta_data.topics.keys())
 
         if self.topic_name in cluster_meta_data.topics.keys():
-            self.existing_topics.add(self.topic_name)
+            Producer.existing_topics.add(self.topic_name)
             logger.debug(f"Topic {self.topic_name} already exists")
             return
 
@@ -72,8 +71,8 @@ class Producer:
         )
 
         try:
-            futures[self.topic_name].result(timeout=30)
-            self.existing_topics.add(self.topic_name)
+            futures[self.topic_name].result()
+            Producer.existing_topics.add(self.topic_name)
             logger.info(f"Created topic: {self.topic_name}")
         except Exception:
             logger.exception(f"failed to create topic {self.topic_name}")

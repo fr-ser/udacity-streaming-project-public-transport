@@ -3,40 +3,30 @@
 For the description and further information see the [file](instructions.md) in
 [Github](https://github.com/fr-ser/udacity_stream_exercise_public_transport)
 
-### Running the Simulation
+## Running the Simulation
 
-#### To run the `producer`:
+To run the whole thing:
 
 ```bash
-docker-compose up --build producers
+./start.sh
 ```
 
 Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 
-#### To run the Faust Stream Processing Application:
+## Weird Hack Announcement
 
-1. `cd consumers`
-2. `virtualenv venv`
-3. `. venv/bin/activate`
-4. `pip install -r requirements.txt`
-5. `faust -A faust_stream worker -l info`
+Creating a lot of topics for is very taxing for the disk space (and kafka probably).
+Due to reproducible, but not easily explainable or understandable circumstances on startup
+(when a lot of topics are created) the topic creation results in applications errors due to
+timeouts.
 
-#### To run the KSQL Creation Script:
+These errors only happened when the whole docker stack is started as one
+(no matter how long each service gives the previous ones time to start up).
+The errors vanish into thin air, when kafka is started alone and immediately afterwards the rest
+of the stack.
+Therefore see the miraculous hack:
 
-1. `cd consumers`
-2. `virtualenv venv`
-3. `. venv/bin/activate`
-4. `pip install -r requirements.txt`
-5. `python ksql.py`
-
-#### To run the `consumer`:
-
-** NOTE **: Do not run the consumer until you have reached Step 6!
-
-1. `cd consumers`
-2. `virtualenv venv`
-3. `. venv/bin/activate`
-4. `pip install -r requirements.txt`
-5. `python server.py`
-
-Once the server is running, you may hit `Ctrl+C` at any time to exit.
+```bash
+docker-compose up -d kafka0
+docker-compose up producer
+```
