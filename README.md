@@ -5,10 +5,14 @@ For the description and further information see the [file](instructions.md) in
 
 ## Running the Simulation
 
+In order to be closer to production KSQL is used in non interactive mode. But this creates a timing
+problem with topic creation. Therefore a simple docker-compose up is not possible.
+A fix for this is to startup kafka and topic creation before and afterwards the rest of the stack.
+
 To run the whole thing:
 
 ```bash
-docker-compose up producers
+./startup.sh
 ```
 
 Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
