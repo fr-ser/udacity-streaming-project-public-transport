@@ -1,0 +1,12 @@
+FROM python:3.7.6-slim-buster
+
+WORKDIR /app
+
+COPY ./consumers/requirements.txt /app/
+
+RUN pip install -r requirements.txt
+
+COPY consumers/ /app/
+COPY shared_helpers/ /app/shared_helpers/
+
+CMD python wait_for_dependencies.py && python -m faust -A faust_stream worker --without-web
