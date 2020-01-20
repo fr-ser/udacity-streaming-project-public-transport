@@ -1,0 +1,7 @@
+WEATHER = "cta_weather"
+STATION_ARRIVAL = "cta_station_arrival"
+STATION_TURNSTILE = "cta_station_turnstile"
+CONNECT_PREFIX = "connect_cta_db_"
+CONNECT_STATION_TABLE = "stations"
+CONNECT_DB_STATIONS = f"{CONNECT_PREFIX}{CONNECT_STATION_TABLE}"
+STATION_INFO = "cta_station_info"

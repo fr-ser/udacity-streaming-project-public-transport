@@ -1,8 +1,9 @@
 import math
-from pathlib import Path
 import random
 
 import pandas as pd
+
+from shared_helpers.config import DATA_PATH
 
 
 class TurnstileHardware:
@@ -29,13 +30,9 @@ class TurnstileHardware:
     @classmethod
     def _load_data(cls):
         if cls.curve_df is None:
-            cls.curve_df = pd.read_csv(
-                f"{Path(__file__).parents[1]}/data/ridership_curve.csv"
-            )
+            cls.curve_df = pd.read_csv(DATA_PATH / "ridership_curve.csv")
         if cls.seed_df is None:
-            cls.seed_df = pd.read_csv(
-                f"{Path(__file__).parents[1]}/data/ridership_seed.csv"
-            )
+            cls.seed_df = pd.read_csv(DATA_PATH / "ridership_seed.csv")
 
     def get_entries(self, timestamp, time_step):
         """Returns the number of turnstile entries for the given timeframe"""

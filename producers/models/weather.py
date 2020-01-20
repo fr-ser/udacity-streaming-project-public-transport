@@ -9,6 +9,7 @@ import requests
 
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH, KAKFA_REST_PROXY_URL
+from shared_helpers.topics import WEATHER
 
 
 class Weather:
@@ -24,7 +25,7 @@ class Weather:
     winter_months = set((0, 1, 2, 3, 10, 11))
     summer_months = set((6, 7, 8))
 
-    topic_name = "cta.weather"
+    topic_name = WEATHER
 
     def __init__(self, month):
         self.status = Weather.status.sunny

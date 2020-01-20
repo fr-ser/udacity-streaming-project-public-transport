@@ -6,6 +6,7 @@ import requests
 
 from shared_helpers.logging import logger
 from shared_helpers.config import KAFKA_CONNECT_URL, STATION_DB_JDBC_URL
+from shared_helpers.topics import CONNECT_PREFIX, CONNECT_STATION_TABLE
 
 CONNECTOR_NAME = "stations"
 
@@ -32,12 +33,11 @@ def configure_connector():
                 "value.converter.schemas.enable": "false",
                 "batch.max.rows": "500",
                 "connection.url": STATION_DB_JDBC_URL,
-                "table.whitelist": "stations",
+                "table.whitelist": CONNECT_STATION_TABLE,
                 "mode": "incrementing",
                 "incrementing.column.name": "stop_id",
-                "topic.prefix": "connect.cta.db.",
-                # 1 day
-                "poll.interval.ms": "86400000",
+                "topic.prefix": CONNECT_PREFIX,
+                "poll.interval.ms": "86400000",  # 1 day
             }
         }),
     )

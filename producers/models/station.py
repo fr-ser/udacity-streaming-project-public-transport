@@ -3,6 +3,7 @@
 from confluent_kafka import avro
 
 from shared_helpers.logging import logger
+from shared_helpers.topics import STATION_ARRIVAL
 from shared_helpers.config import SCHEMA_PATH
 
 from . import Turnstile
@@ -15,7 +16,7 @@ class Station(Producer):
     key_schema = avro.load(SCHEMA_PATH / "arrival_key.json")
     value_schema = avro.load(SCHEMA_PATH / "arrival_value.json")
 
-    topic_name = "cta.station.arrival"
+    topic_name = STATION_ARRIVAL
 
     def __init__(self, station_id, name, color, direction_a=None, direction_b=None):
         cleaned_station_name = (
@@ -57,7 +58,7 @@ class Station(Producer):
                 value_schema=self.value_schema,
             )
         except Exception:
-            logger.exception(f"Error producing for station {self.station.name}")
+            logger.exception(f"Error producing for station {self.name}")
             raise
 
         logger.debug(f"produced arrival of train {train} at station {self.name}")
