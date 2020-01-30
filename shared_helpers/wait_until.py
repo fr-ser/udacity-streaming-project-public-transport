@@ -5,7 +5,7 @@ from confluent_kafka import admin, KafkaException
 import requests
 
 from shared_helpers.logging import logger
-from shared_helpers.topics import WEATHER
+from shared_helpers.topics import WEATHER_STATUS
 from shared_helpers.config import (
     KAFKA_BOOTSTRAP_SERVERS,
     KAFKA_SCHEMA_REGISTRY_URL,
@@ -65,10 +65,10 @@ def check_kafka():
 
     cluster_meta_data = client.list_topics(timeout=1)
     # fail if custom topic is not present
-    return WEATHER in cluster_meta_data.topics.keys()
+    return WEATHER_STATUS in cluster_meta_data.topics.keys()
 
 
-@_wait_until_or_crash(timeout=30, caught_exception=Exception)
+@_wait_until_or_crash(timeout=45, caught_exception=Exception)
 def check_schema_registry():
     resp = requests.get(
         f"{KAFKA_SCHEMA_REGISTRY_URL}/config",

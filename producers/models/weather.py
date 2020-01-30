@@ -9,14 +9,16 @@ import requests
 
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH, KAKFA_REST_PROXY_URL
-from shared_helpers.topics import WEATHER
+from shared_helpers.topics import WEATHER_STATUS
 
 
 class Weather:
     """Defines a simulated weather model"""
 
     status = IntEnum(
-        "status", "sunny partly_cloudy cloudy windy precipitation", start=0
+        "status",
+        "sunny partly_cloudy cloudy windy precipitation",
+        start=0,
     )
 
     key_schema = None
@@ -25,7 +27,7 @@ class Weather:
     winter_months = set((0, 1, 2, 3, 10, 11))
     summer_months = set((6, 7, 8))
 
-    topic_name = WEATHER
+    topic_name = WEATHER_STATUS
 
     def __init__(self, month):
         self.status = Weather.status.sunny
@@ -65,7 +67,7 @@ class Weather:
                 "records": [
                     {
                         "key": {"timestamp": int(time.time())},
-                        "value": {"temperature": self.temp, "status": self.status},
+                        "value": {"temperature": self.temp, "status": self.status.name},
                     },
                 ],
             }),

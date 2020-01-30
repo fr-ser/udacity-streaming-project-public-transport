@@ -4,7 +4,7 @@ from confluent_kafka import avro
 
 from shared_helpers.logging import logger
 from shared_helpers.config import SCHEMA_PATH
-from shared_helpers.topics import STATION_TURNSTILE
+from shared_helpers.topics import TURNSTILE_COUNT_UPDATE
 from .producer import Producer
 from .turnstile_hardware import TurnstileHardware
 
@@ -13,7 +13,7 @@ class Turnstile(Producer):
     key_schema = avro.load(SCHEMA_PATH / "turnstile_key.json")
     value_schema = avro.load(SCHEMA_PATH / "turnstile_value.json")
 
-    topic_name = STATION_TURNSTILE
+    topic_name = TURNSTILE_COUNT_UPDATE
 
     def __init__(self, station):
         cleaned_station_name = (
@@ -40,7 +40,7 @@ class Turnstile(Producer):
                 value={
                     "station_id": self.station.station_id,
                     "station_name": self.station.name,
-                    "line": self.station.color,
+                    "line": self.station.color.name,
                     "num_entries": num_entries,
                 },
                 key_schema=self.key_schema,

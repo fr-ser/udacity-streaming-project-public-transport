@@ -46,11 +46,11 @@ services:
     environment:
       BOOTSTRAP_SERVER: kafka2:19094
       CREATE_TOPICS: >-
-        cta_weather:5:3,
-        cta_station_arrival:15:3,
-        cta_station_turnstile:15:3,
-        connect_cta_db_stations:1:3,
-        cta_station_info:1:3
+        cta.weather.status:5:3,
+        cta.station.arrival:15:3,
+        cta.station.turnstile:15:3,
+        cta.connect.db.stations:1:3,
+        cta.station.master-data:1:3
     depends_on:
       - kafka0
       - kafka1

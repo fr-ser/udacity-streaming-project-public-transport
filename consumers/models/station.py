@@ -1,9 +1,4 @@
 """Contains functionality related to Stations"""
-import json
-import logging
-
-
-logger = logging.getLogger(__name__)
 
 
 class Station:
@@ -38,6 +33,6 @@ class Station:
         else:
             self.dir_b = status_dict
 
-    def process_message(self, json_data):
-        """Handles arrival and turnstile messages"""
+    def handle_turnstile_count_update(self, json_data):
+        """Handles turnstile messages"""
         self.num_turnstile_entries = json_data["COUNT"]

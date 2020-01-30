@@ -10,6 +10,8 @@ confluent-kafka = {extras = ["avro"],version = "*"}
 pandas = "*"
 requests = "*"
 loguru = "*"
+faust = "*"
+tornado = "*"
 
 [requires]
 python_version = "3.7"

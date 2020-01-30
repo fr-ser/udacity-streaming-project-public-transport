@@ -1,11 +1,9 @@
 """Contains functionality related to Lines"""
 import json
-import logging
 
+from shared_helpers.logging import logger
+from shared_helpers.topics import STATION_MASTER_DATA, TRAIN_ARRIVAL, TURNSTILE_ENTRIES_TABLE
 from models import Station
-
-
-logger = logging.getLogger(__name__)
 
 
 class Line:
@@ -39,16 +37,16 @@ class Line:
             if prev_station is not None:
                 prev_station.handle_departure(prev_dir)
             else:
-                logger.debug("unable to handle previous station due to missing station")
+                logger.trace("unable to handle previous station due to missing station")
         else:
-            logger.debug(
+            logger.trace(
                 "unable to handle previous station due to missing previous info"
             )
 
         station_id = value.get("station_id")
         station = self.stations.get(station_id)
         if station is None:
-            logger.debug("unable to handle message due to missing station")
+            logger.trace("unable to handle message due to missing station")
             return
         station.handle_arrival(
             value.get("direction"), value.get("train_id"), value.get("train_status")
@@ -56,24 +54,25 @@ class Line:
 
     def process_message(self, message):
         """Given a kafka message, extract data"""
-        # TODO: Based on the message topic, call the appropriate handler.
-        if True: # Set the conditional correctly to the stations Faust Table
+        topic = message.topic()
+
+        if topic == STATION_MASTER_DATA:
             try:
                 value = json.loads(message.value())
                 self._handle_station(value)
             except Exception as e:
-                logger.fatal("bad station? %s, %s", value, e)
-        elif True: # Set the conditional to the arrival topic
+                logger.error(f"bad station? {value}, {e}")
+        elif topic == TRAIN_ARRIVAL:
             self._handle_arrival(message)
-        elif True: # Set the conditional to the KSQL Turnstile Summary Topic
+        elif topic == TURNSTILE_ENTRIES_TABLE:
             json_data = json.loads(message.value())
             station_id = json_data.get("STATION_ID")
             station = self.stations.get(station_id)
             if station is None:
-                logger.debug("unable to handle message due to missing station")
+                # stations need to be loaded first before they are processed
+                # This condition is to be expected during startup
+                logger.trace("unable to update turnstile due to missing station info")
                 return
-            station.process_message(json_data)
+            station.handle_turnstile_count_update(json_data)
         else:
-            logger.debug(
-                "unable to find handler for message from topic %s", message.topic
-            )
+            logger.warning(f"unable to find handler for message from topic {topic}")

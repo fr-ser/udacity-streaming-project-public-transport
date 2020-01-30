@@ -3,7 +3,7 @@
 from confluent_kafka import avro
 
 from shared_helpers.logging import logger
-from shared_helpers.topics import STATION_ARRIVAL
+from shared_helpers.topics import TRAIN_ARRIVAL
 from shared_helpers.config import SCHEMA_PATH
 
 from . import Turnstile
@@ -16,7 +16,7 @@ class Station(Producer):
     key_schema = avro.load(SCHEMA_PATH / "arrival_key.json")
     value_schema = avro.load(SCHEMA_PATH / "arrival_value.json")
 
-    topic_name = STATION_ARRIVAL
+    topic_name = TRAIN_ARRIVAL
 
     def __init__(self, station_id, name, color, direction_a=None, direction_b=None):
         cleaned_station_name = (
@@ -49,8 +49,8 @@ class Station(Producer):
                     "station_id": self.station_id,
                     "train_id": train.train_id,
                     "direction": direction,
-                    "line": self.color,
-                    "train_status": train.status,
+                    "line": self.color.name,
+                    "train_status": train.status.name,
                     "prev_station_id": prev_station_id,
                     "prev_direction": prev_direction,
                 },

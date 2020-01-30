@@ -5,12 +5,11 @@ import faust
 
 from shared_helpers.logging import logger
 from shared_helpers.config import KAFKA_BOOTSTRAP_SERVERS
-from shared_helpers.topics import CONNECT_DB_STATIONS, STATION_INFO
-
-# Faust will ingest records from Kafka in this format
+from shared_helpers.topics import DB_STATION_RAW, STATION_MASTER_DATA
 
 
 class Station(faust.Record):
+    """Incoming message format"""
     stop_id: int
     direction_id: str
     stop_name: str
@@ -23,8 +22,8 @@ class Station(faust.Record):
     green: bool
 
 
-# Faust will produce records to Kafka in this format
 class TransformedStation(faust.Record):
+    """Outgoing message format"""
     station_id: int
     station_name: str
     order: int
@@ -43,9 +42,9 @@ app = faust.App(
     },
 )
 
-in_topic = app.topic(CONNECT_DB_STATIONS, value_type=Station)
+in_topic = app.topic(DB_STATION_RAW, value_type=Station)
 
-out_topic = app.topic(STATION_INFO, value_type=TransformedStation)
+out_topic = app.topic(STATION_MASTER_DATA, value_type=TransformedStation)
 table = app.Table(
     "station-info-table",
     default=TransformedStation,
@@ -64,6 +63,9 @@ async def transform_stations(stations):
             line_color = "blue"
         elif station.green:
             line_color = "green"
+        else:
+            logger.warning(f"Received unknown line: {station}")
+            continue
 
         transformed_station = TransformedStation(
             station_id=station.station_id,
@@ -71,7 +73,7 @@ async def transform_stations(stations):
             order=station.order,
             line=line_color,
         )
-        table[station.station_id] = transformed_station
+        table[station.stop_id] = transformed_station
 
 
 if __name__ == "__main__":

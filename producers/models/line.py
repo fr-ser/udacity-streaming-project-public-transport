@@ -68,11 +68,13 @@ class Line:
 
     def close(self):
         """Called to stop the simulation"""
-        _ = [station.close() for station in self.stations]
+        for station in self.stations:
+            station.close()
 
     def _advance_turnstiles(self, timestamp, time_step):
         """Advances the turnstiles in the simulation"""
-        _ = [station.turnstile.run(timestamp, time_step) for station in self.stations]
+        for station in self.stations:
+            station.turnstile.run(timestamp, time_step)
 
     def _advance_trains(self):
         """Advances trains between stations in the simulation"""
