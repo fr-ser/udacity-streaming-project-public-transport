@@ -62,8 +62,9 @@ class TimeSimulation:
                 # Send weather on the top of the hour
                 if curr_time.minute == 0:
                     weather.run(curr_time.month)
-                    for line in self.train_lines:
-                        line.run(curr_time, self.time_step)
+                for line in self.train_lines:
+                    line.run(curr_time, self.time_step)
+
                 curr_time = curr_time + self.time_step
                 time.sleep(self.sleep_seconds)
         except KeyboardInterrupt:
