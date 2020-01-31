@@ -76,5 +76,11 @@ async def transform_stations(stations):
         table[station.stop_id] = transformed_station
 
 
+@app.page('/health/')
+class HealthCheck(faust.web.View):
+    async def get(self, request):
+        return self.json({"rebalances": app.monitor.rebalances})
+
+
 if __name__ == "__main__":
     app.main()

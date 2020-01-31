@@ -120,6 +120,7 @@ services:
       KSQL_KSQL_SERVICE_ID: "ksql_service_docker"
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081/"
       KSQL_KSQL_INTERNAL_TOPIC_REPLICAS: 3
+    restart: on-failure
     volumes:
       - ./consumers/ksql.sql:/app/queries.sql
     depends_on:
@@ -205,3 +206,20 @@ services:
       - schema-registry
       - connect
       - rest-proxy
+
+  consumer-server:
+    build:
+      context: ./
+      dockerfile: ./consumers/DockerfileServer
+    ports:
+      - "8888:8888"
+    environment:
+      BASE_PATH: "/app/consumers/"
+      STATION_DB_JDBC_URL: "jdbc:postgresql://postgres:5432/cta?user=cta_admin&password=chicago"
+      KAFKA_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka0:19092,PLAINTEXT://kafka1:19093,PLAINTEXT://kafka2:19094"
+      KAFKA_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      KAFKA_CONNECT_URL: "http://connect:8083"
+      KAKFA_REST_PROXY_URL: "http://rest-proxy:8082"
+    depends_on:
+      - faust-stream
+      - ksql

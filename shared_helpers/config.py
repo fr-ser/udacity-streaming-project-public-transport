@@ -15,3 +15,4 @@ KAFKA_BOOTSTRAP_SERVERS = os.environ.get("KAFKA_BOOTSTRAP_SERVERS", "localhost:9
 KAFKA_SCHEMA_REGISTRY_URL = os.environ.get("KAFKA_SCHEMA_REGISTRY_URL", "http://localhost:8081")
 KAFKA_CONNECT_URL = os.environ.get("KAFKA_CONNECT_URL", "http://localhost:8083")
 KAKFA_REST_PROXY_URL = os.environ.get("KAKFA_REST_PROXY_URL", "http://localhost:8082")
+FAUST_URL = os.environ.get("FAUST_URL", "http://faust-stream:6066")

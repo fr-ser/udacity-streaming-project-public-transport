@@ -5,12 +5,13 @@ from confluent_kafka import admin, KafkaException
 import requests
 
 from shared_helpers.logging import logger
-from shared_helpers.topics import WEATHER_STATUS
+from shared_helpers.topics import WEATHER_STATUS, TURNSTILE_ENTRIES_TABLE
 from shared_helpers.config import (
     KAFKA_BOOTSTRAP_SERVERS,
     KAFKA_SCHEMA_REGISTRY_URL,
     KAKFA_REST_PROXY_URL,
     KAFKA_CONNECT_URL,
+    FAUST_URL,
 )
 
 
@@ -95,3 +96,20 @@ def check_kafka_connect():
     resp.raise_for_status()
     # list of plugins should not be empty
     return resp.json()
+
+
+@_wait_until_or_crash(timeout=45, caught_exception=Exception)
+def check_faust_stream():
+    resp = requests.get(f"{FAUST_URL}/health/")
+    resp.raise_for_status()
+    # at least one rebalance should be completed
+    return resp.json()["rebalances"] > 0
+
+
+@_wait_until_or_crash(timeout=30, caught_exception=Exception)
+def check_ksql():
+    client = admin.AdminClient({"bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS})
+
+    cluster_meta_data = client.list_topics(timeout=1)
+    # fail if custom topic is not present
+    return TURNSTILE_ENTRIES_TABLE in cluster_meta_data.topics.keys()
