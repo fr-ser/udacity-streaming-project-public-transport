@@ -5,21 +5,22 @@ For the description and further information see the [file](instructions.md) in
 
 ## Running the Simulation
 
-In order to be closer to production KSQL is used in non interactive mode. But this creates a timing
+KSQL is used in non interactive mode in order to be closer to production. But this creates a timing
 problem with topic creation. Therefore a simple docker-compose up is not possible.
-A fix for this is to startup kafka and topic creation before and afterwards the rest of the stack.
+A fix for this is to startup kafka and topic creation first. KSQL and the rest of the stack start
+afterwards.
 
-To run the whole thing:
+To run the pipeline use one of the following commands:
 
-```bash
-./startup.sh
-```
+- (minimal) pipeline: `./run.sh`
+- whole pipeline including various UI containers and KSQL in interactive mode: `./run_all.sh`
 
-Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
+In order to have a clean start after a problem the following commands are recommended (especially
+to clear the kafka volume): `docker-compose down --volumes --timeout 10`
 
 ## Topic creation
 
-Personally I do not like creating topics dynamically. In like the topics to exist before the
+Personally, I do not like creating topics dynamically, but prefer the topics to exist before the
 application starts running.
 This is of course not possible when dynamic information (such as a station name) is part of the
 topic name.

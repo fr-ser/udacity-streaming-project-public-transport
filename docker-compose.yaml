@@ -109,22 +109,29 @@ services:
       - kafka2
       - schema-registry
 
-  ksql:
+  ksql: &ksql-default
     image: confluentinc/cp-ksql-server:5.4.0
     ports:
       - "8088:8088"
-    environment:
+    environment: &default-ksql-env
       KSQL_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka0:19092,PLAINTEXT://kafka1:19093,PLAINTEXT://kafka2:19094"
-      # KSQL_LISTENERS: "http://0.0.0.0:8088"
-      KSQL_KSQL_QUERIES_FILE: /app/queries.sql
       KSQL_KSQL_SERVICE_ID: "ksql_service_docker"
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081/"
       KSQL_KSQL_INTERNAL_TOPIC_REPLICAS: 3
+    environment:
+      <<: *default-ksql-env
+      KSQL_KSQL_QUERIES_FILE: /app/queries.sql
     restart: on-failure
     volumes:
       - ./consumers/ksql.sql:/app/queries.sql
     depends_on:
       - kafka-cli
+
+  ksql-interactive:
+    <<: *ksql-default
+    environment:
+      <<: *default-ksql-env
+      KSQL_LISTENERS: "http://0.0.0.0:8088"
 
   connect-ui:
     image: landoop/kafka-connect-ui:0.9.7
@@ -222,4 +229,4 @@ services:
       KAKFA_REST_PROXY_URL: "http://rest-proxy:8082"
     depends_on:
       - faust-stream
-      - ksql
+      # - ksql or ksql-interactive
