@@ -1,7 +1,6 @@
 # Public Transit Status with Apache Kafka
 
-For the description and further information see the [file](instructions.md) in
-[Github](https://github.com/fr-ser/udacity_stream_exercise_public_transport)
+For the description and further information see [instructions.md](instructions.md)
 
 ## Running the Simulation
 
@@ -17,6 +16,10 @@ To run the pipeline use one of the following commands:
 
 In order to have a clean start after a problem the following commands are recommended (especially
 to clear the kafka volume): `docker-compose down --volumes --timeout 10`
+
+## Topics
+
+For a list and description of the topics see [shared_helpers/topics.py](shared_helpers/topics.py)
 
 ## Topic creation
 
