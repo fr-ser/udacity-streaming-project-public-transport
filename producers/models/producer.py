@@ -25,8 +25,8 @@ class Producer:
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-
-        self.producer.flush(timeout=60)
+        if self.producer:
+            self.producer.flush(timeout=60)
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""
